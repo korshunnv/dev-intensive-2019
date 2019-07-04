@@ -36,8 +36,8 @@ private fun formatDateTime(value:Long, units: TimeUnits = TimeUnits.SECOND):Stri
     }
     if (value%10==1L && value%100!=11L) {
         result = when (units) {
-            TimeUnits.SECOND -> "секунда"
-            TimeUnits.MINUTE -> "минута"
+            TimeUnits.SECOND -> "секунду"
+            TimeUnits.MINUTE -> "минуту"
             TimeUnits.HOUR -> "час"
             TimeUnits.DAY -> "день"
         }
