@@ -1,6 +1,5 @@
 package ru.skillbranch.devintensive.extensions
 
-import java.lang.IllegalStateException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -57,7 +56,7 @@ private fun formatDateTime(value:Long, units: TimeUnits = TimeUnits.SECOND):Stri
 fun Date.humanizeDiff(date: Date = Date()): String {
     var string = ""
     val time:Long = this.time - date.time
-    var absTime:Long = if (time>0) time else time*(-1)
+    val absTime:Long = if (time>0) time else time*(-1)
     val second = absTime / SECOND
         if (second<=1) string = "только что"
         else {
@@ -65,17 +64,17 @@ fun Date.humanizeDiff(date: Date = Date()): String {
             else {
                 if (second <= 75) string = "минуту"
                 else {
-                    var minute = absTime / MINUTE
+                    val minute = absTime / MINUTE
                     if (minute <= 45) string = "$minute ${formatDateTime(minute, TimeUnits.MINUTE)}"
                     else {
                         if (minute <= 75) string = "час"
                         else {
-                            var hour = absTime / HOUR
+                            val hour = absTime / HOUR
                             if (hour <= 22) string = "$hour ${formatDateTime(hour, TimeUnits.HOUR)}"
                             else {
                                 if (hour < 26) string = "день"
                                 else {
-                                    var day = absTime / DAY
+                                    val day = absTime / DAY
                                     if (day < 360) string = "$day ${formatDateTime(day, TimeUnits.DAY)}"
                                     else string = "более года"
                                 }
@@ -92,8 +91,26 @@ fun Date.humanizeDiff(date: Date = Date()): String {
 }
 
 enum class TimeUnits{
-    SECOND,
-    MINUTE,
-    HOUR,
-    DAY
+    SECOND {
+        override fun plural(value: Long): String {
+            return "$value ${formatDateTime(value, SECOND)}"
+        }
+    },
+    MINUTE {
+        override fun plural(value: Long): String {
+            return "$value ${formatDateTime(value, MINUTE)}"
+        }
+    },
+    HOUR {
+        override fun plural(value: Long): String {
+            return "$value ${formatDateTime(value, HOUR)}"
+        }
+    },
+    DAY {
+        override fun plural(value: Long): String {
+            return "$value ${formatDateTime(value, DAY)}"
+        }
+    };
+
+    abstract fun plural(value:Long): String
 }
