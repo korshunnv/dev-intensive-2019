@@ -1,5 +1,6 @@
 package ru.skillbranch.devintensive
 
+import android.app.Activity
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -7,15 +8,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
+import ru.skillbranch.devintensive.extensions.hideKeyboard
 import ru.skillbranch.devintensive.models.Bender
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity(), View.OnClickListener,  TextView.OnEditorActionListener{
 
     lateinit var benderImage : ImageView
     lateinit var textTxt : TextView
@@ -36,8 +40,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         val status = savedInstanceState?.getString("STATUS")?: Bender.Status.NORMAL.name
         val question = savedInstanceState?.getString("QUESTION")?: Bender.Question.NAME.name
-
+        val answer = savedInstanceState?.getString("ANSWER")?: Bender.Question.NAME.answer[0]
         benderObj = Bender(Bender.Status.valueOf(status), Bender.Question.valueOf(question))
+        messageEd.setText(answer)
 
         Log.d("M_MainActivity","onCreate $status$ $question$")
         val (r,g,b) = benderObj.status.color
@@ -45,7 +50,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         textTxt.text = benderObj.askQueston()
         sendBtn.setOnClickListener(this)
-
+        //messageEd.setOnKeyListener(this)
+        messageEd.setOnEditorActionListener(this)
     }
 
     override fun onRestart() {
@@ -77,10 +83,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         super.onSaveInstanceState(outState)
         outState?.putString("STATUS", benderObj.status.name)
         outState?.putString("QUESTION", benderObj.question.name)
+        outState?.putString("ANSWER",messageEd.text.toString())
         Log.d("M_MainActivity","onSaveInstanceState ${benderObj.status.name} ${benderObj.question.name}$")
     }
-    override fun onClick(p0: View?) {
-        if (p0?.id == R.id.iv_send){
+
+    override fun onClick(v: View?) {
+        if (v?.id == R.id.iv_send){
             val (phrase, color) = benderObj.listenAnswer(messageEd.text.toString().toLowerCase())
             messageEd.setText("")
             val (r,g,b) = color
@@ -88,5 +96,21 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             textTxt.text = phrase
         }
     }
+
+    /*
+    Реализуй кнопку DONE в Software Keyboard (imeOptions="actionDone"), при нажатии на которую
+    будет происходить отправка сообщения в экземпляр класса Bender и скрытие клавиатуры.
+    Для этого реализуй OnEditorActionListener для EditText (et_message)
+     */
+    override fun onEditorAction(tv: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+        if (actionId==EditorInfo.IME_ACTION_DONE) {
+            //val (phrase, color) = benderObj.listenAnswer(messageEd.text.toString().toLowerCase())
+            onClick(sendBtn)
+            hideKeyboard()
+            return true
+        }
+        return false
+    }
+
 
 }

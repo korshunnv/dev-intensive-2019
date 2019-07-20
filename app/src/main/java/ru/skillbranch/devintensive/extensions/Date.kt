@@ -54,29 +54,29 @@ private fun formatDateTime(value:Long, units: TimeUnits = TimeUnits.SECOND):Stri
 }
 
 fun Date.humanizeDiff(date: Date = Date()): String {
-    var string = ""
+    var timeString = ""
     val time:Long = this.time - date.time
     val absTime:Long = if (time>0) time else time*(-1)
     val second = absTime / SECOND
-        if (second<=1) string = "только что"
+        if (second<=1) timeString = "только что"
         else {
-            if (second <= 45) string = "несколько секунд"
+            if (second <= 45) timeString = "несколько секунд"
             else {
-                if (second <= 75) string = "минуту"
+                if (second <= 75) timeString = "минуту"
                 else {
                     val minute = absTime / MINUTE
-                    if (minute <= 45) string = "$minute ${formatDateTime(minute, TimeUnits.MINUTE)}"
+                    if (minute <= 45) timeString = "$minute ${formatDateTime(minute, TimeUnits.MINUTE)}"
                     else {
-                        if (minute <= 75) string = "час"
+                        if (minute <= 75) timeString = "час"
                         else {
                             val hour = absTime / HOUR
-                            if (hour <= 22) string = "$hour ${formatDateTime(hour, TimeUnits.HOUR)}"
+                            if (hour <= 22) timeString = "$hour ${formatDateTime(hour, TimeUnits.HOUR)}"
                             else {
-                                if (hour < 26) string = "день"
+                                if (hour < 26) timeString = "день"
                                 else {
                                     val day = absTime / DAY
-                                    if (day < 360) string = "$day ${formatDateTime(day, TimeUnits.DAY)}"
-                                    else string = "более года"
+                                    if (day < 360) timeString = "$day ${formatDateTime(day, TimeUnits.DAY)}"
+                                    else timeString = "более года"
                                 }
                             }
                         }
@@ -84,10 +84,10 @@ fun Date.humanizeDiff(date: Date = Date()): String {
                 }
             }
         }
-    if (!string.equals("только что"))
-        if (time>0 && time/ DAY>=360 ) string = "более чем через год"
-        else string = if (time<0) string+ " назад"  else "через "+string
-    return string
+    if (!timeString.equals("только что"))
+        if (time>0 && time/ DAY>=360 ) timeString = "более чем через год"
+        else timeString = if (time<0) timeString+ " назад"  else "через "+timeString
+    return timeString
 }
 
 enum class TimeUnits{
