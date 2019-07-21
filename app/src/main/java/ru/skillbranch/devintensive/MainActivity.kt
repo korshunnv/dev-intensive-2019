@@ -1,17 +1,13 @@
 package ru.skillbranch.devintensive
 
-import android.app.Activity
-import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.PorterDuff
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -19,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import ru.skillbranch.devintensive.extensions.hideKeyboard
 import ru.skillbranch.devintensive.models.Bender
 
-class MainActivity : AppCompatActivity(), View.OnClickListener,  TextView.OnEditorActionListener{
+class MainActivity : AppCompatActivity(), View.OnClickListener,  TextView.OnEditorActionListener {
 
     lateinit var benderImage : ImageView
     lateinit var textTxt : TextView
@@ -41,18 +37,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,  TextView.OnEdit
         val status = savedInstanceState?.getString("STATUS")?: Bender.Status.NORMAL.name
         val question = savedInstanceState?.getString("QUESTION")?: Bender.Question.NAME.name
         val answer = savedInstanceState?.getString("ANSWER")?: Bender.Question.NAME.answer[0]
-        //val valid = savedInstanceState?.getString("VALID")?: benderObj.question.validationAnswer(answer)
         benderObj = Bender(Bender.Status.valueOf(status), Bender.Question.valueOf(question))
         messageEd.setText(answer)
-        //messageEd.setText(valid+"\n"+answer)
 
-        Log.d("M_MainActivity","onCreate $status$ $question$")
+        Log.d("M_MainActivity","onCreate $status $question")
         val (r,g,b) = benderObj.status.color
         benderImage.setColorFilter(Color.rgb(r,g,b), PorterDuff.Mode.MULTIPLY)
 
         textTxt.text = benderObj.askQueston()
         sendBtn.setOnClickListener(this)
-        //messageEd.setOnKeyListener(this)
         messageEd.setOnEditorActionListener(this)
     }
 
@@ -63,7 +56,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,  TextView.OnEdit
 
     override fun onStart() {
         super.onStart()
-        Log.d("M_MainActivity","onStart")
+        Log.d("M_MainActivity","onStart ")
+        /*val rect = Rect()
+        this.window.decorView.getWindowVisibleDisplayFrame(rect) // this = activity
+        Log.d("M_MainActivity","onStart Open ${isKeyboardOpen()} ${this.window.decorView.height} ${rect.height()}")*/
     }
 
     override fun onPause() {
@@ -86,17 +82,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,  TextView.OnEdit
         outState?.putString("STATUS", benderObj.status.name)
         outState?.putString("QUESTION", benderObj.question.name)
         outState?.putString("ANSWER",messageEd.text.toString())
-        outState?.putString("VALID", benderObj.question.validationAnswer(messageEd.text.toString()))
-        Log.d("M_MainActivity","onSaveInstanceState ${benderObj.status.name} ${benderObj.question.name}$")
+        Log.d("M_MainActivity","onSaveInstanceState ${benderObj.status.name} ${benderObj.question.name}")
     }
 
     override fun onClick(v: View?) {
+
+        /*val rect = Rect()
+        this.window.decorView.getWindowVisibleDisplayFrame(rect) // this = activity
+        Log.d("M_MainActivity","onClick Open ${isKeyboardOpen()} ${this.window.decorView.height} ${rect.height()}")*/
+
         if (v?.id == R.id.iv_send){
             val (phrase, color) = benderObj.listenAnswer(messageEd.text.toString())
             messageEd.setText("")
             val (r,g,b) = color
             benderImage.setColorFilter(Color.rgb(r,g,b), PorterDuff.Mode.MULTIPLY)
             textTxt.text = phrase
+            //Log.d("M_MainActivity","onClick Open ${isKeyboardOpen()}")
             //hideKeyboard()
         }
     }
