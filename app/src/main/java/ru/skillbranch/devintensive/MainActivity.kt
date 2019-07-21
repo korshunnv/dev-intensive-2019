@@ -41,8 +41,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,  TextView.OnEdit
         val status = savedInstanceState?.getString("STATUS")?: Bender.Status.NORMAL.name
         val question = savedInstanceState?.getString("QUESTION")?: Bender.Question.NAME.name
         val answer = savedInstanceState?.getString("ANSWER")?: Bender.Question.NAME.answer[0]
+        //val valid = savedInstanceState?.getString("VALID")?: benderObj.question.validationAnswer(answer)
         benderObj = Bender(Bender.Status.valueOf(status), Bender.Question.valueOf(question))
         messageEd.setText(answer)
+        //messageEd.setText(valid+"\n"+answer)
 
         Log.d("M_MainActivity","onCreate $status$ $question$")
         val (r,g,b) = benderObj.status.color
@@ -84,27 +86,29 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,  TextView.OnEdit
         outState?.putString("STATUS", benderObj.status.name)
         outState?.putString("QUESTION", benderObj.question.name)
         outState?.putString("ANSWER",messageEd.text.toString())
+        outState?.putString("VALID", benderObj.question.validationAnswer(messageEd.text.toString()))
         Log.d("M_MainActivity","onSaveInstanceState ${benderObj.status.name} ${benderObj.question.name}$")
     }
 
     override fun onClick(v: View?) {
         if (v?.id == R.id.iv_send){
-            val (phrase, color) = benderObj.listenAnswer(messageEd.text.toString().toLowerCase())
+            val (phrase, color) = benderObj.listenAnswer(messageEd.text.toString())
             messageEd.setText("")
             val (r,g,b) = color
             benderImage.setColorFilter(Color.rgb(r,g,b), PorterDuff.Mode.MULTIPLY)
             textTxt.text = phrase
+            //hideKeyboard()
         }
     }
 
     /*
+    *actionDone
     Реализуй кнопку DONE в Software Keyboard (imeOptions="actionDone"), при нажатии на которую
     будет происходить отправка сообщения в экземпляр класса Bender и скрытие клавиатуры.
     Для этого реализуй OnEditorActionListener для EditText (et_message)
      */
     override fun onEditorAction(tv: TextView?, actionId: Int, event: KeyEvent?): Boolean {
         if (actionId==EditorInfo.IME_ACTION_DONE) {
-            //val (phrase, color) = benderObj.listenAnswer(messageEd.text.toString().toLowerCase())
             onClick(sendBtn)
             hideKeyboard()
             return true
