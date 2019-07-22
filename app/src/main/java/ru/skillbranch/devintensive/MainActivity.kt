@@ -2,6 +2,7 @@ package ru.skillbranch.devintensive
 
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -13,6 +14,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.skillbranch.devintensive.extensions.hideKeyboard
+import ru.skillbranch.devintensive.extensions.isKeyboardOpen
 import ru.skillbranch.devintensive.models.Bender
 
 class MainActivity : AppCompatActivity(), View.OnClickListener,  TextView.OnEditorActionListener {
@@ -57,9 +59,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,  TextView.OnEdit
     override fun onStart() {
         super.onStart()
         Log.d("M_MainActivity","onStart ")
+
         /*val rect = Rect()
-        this.window.decorView.getWindowVisibleDisplayFrame(rect) // this = activity
-        Log.d("M_MainActivity","onStart Open ${isKeyboardOpen()} ${this.window.decorView.height} ${rect.height()}")*/
+        val rootView = findViewById<View>(android.R.id.content)
+        rootView.getWindowVisibleDisplayFrame(rect)    //this.window.decorView.getWindowVisibleDisplayFrame(rect) // this = activity
+
+        Log.d("M_MainActivity","onStart Open ${isKeyboardOpen()} ${rootView.height} ${rect.height()}")*/
     }
 
     override fun onPause() {
@@ -88,8 +93,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,  TextView.OnEdit
     override fun onClick(v: View?) {
 
         /*val rect = Rect()
-        this.window.decorView.getWindowVisibleDisplayFrame(rect) // this = activity
-        Log.d("M_MainActivity","onClick Open ${isKeyboardOpen()} ${this.window.decorView.height} ${rect.height()}")*/
+        val rootView = findViewById<View>(android.R.id.content)
+        rootView.getWindowVisibleDisplayFrame(rect)    //this.window.decorView.getWindowVisibleDisplayFrame(rect) // this = activity
+
+        Log.d("M_MainActivity","onClick Open ${isKeyboardOpen()} ${rootView.height} ${rect.height()}")*/
 
         if (v?.id == R.id.iv_send){
             val (phrase, color) = benderObj.listenAnswer(messageEd.text.toString())
@@ -97,7 +104,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,  TextView.OnEdit
             val (r,g,b) = color
             benderImage.setColorFilter(Color.rgb(r,g,b), PorterDuff.Mode.MULTIPLY)
             textTxt.text = phrase
-            //Log.d("M_MainActivity","onClick Open ${isKeyboardOpen()}")
             //hideKeyboard()
         }
     }
