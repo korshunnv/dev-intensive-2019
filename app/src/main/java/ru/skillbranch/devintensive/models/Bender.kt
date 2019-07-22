@@ -22,8 +22,6 @@ class Bender (var status:Status = Status.NORMAL, var question:Question = Questio
     и вернуть "Это неправильный ответ. Давай все по новой\n${question.question}" to status.color и изменить цвет ImageView (iv_bender) на цвет status.color
     Необходимо сохранять состояние экземпляра класса Bender при пересоздании Activity (достаточно сохранить Status, Question)
      */
-    //счетчик ответов
-    private var counterWrongAnswer : Int =0
 
     fun listenAnswer(answer: String): Pair<String, Triple<Int, Int, Int>> {
         /*var validString:String? = ""
@@ -59,14 +57,12 @@ class Bender (var status:Status = Status.NORMAL, var question:Question = Questio
                     validString = "Отлично - ты справился"
                     validString + "\n${question.question}" to status.color
                 } else {
-                    counterWrongAnswer++
-                    if (counterWrongAnswer <= 3) {
+                    if (status<Status.CRITICAL) {
                         status = status.nextStatus()
                         "Это неправильный ответ\n${question.question}" to status.color
                     } else {
                         status = Status.NORMAL
                         question = Question.NAME
-                        counterWrongAnswer = 0
                         "Это неправильный ответ. Давай все по новой\n${question.question}" to status.color
                     }
                 }
