@@ -13,6 +13,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
+import ru.skillbranch.devintensive.extensions.KEYBOARD_VISIBLE_THRESHOLD_DP
+import ru.skillbranch.devintensive.extensions.dip
 import ru.skillbranch.devintensive.extensions.hideKeyboard
 import ru.skillbranch.devintensive.extensions.isKeyboardOpen
 import ru.skillbranch.devintensive.models.Bender
@@ -58,13 +60,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,  TextView.OnEdit
 
     override fun onStart() {
         super.onStart()
-        Log.d("M_MainActivity","onStart ")
+        //Log.d("M_MainActivity","onStart ")
 
-        /*val rect = Rect()
+        val rect = Rect()
         val rootView = findViewById<View>(android.R.id.content)
-        rootView.getWindowVisibleDisplayFrame(rect)    //this.window.decorView.getWindowVisibleDisplayFrame(rect) // this = activity
-
-        Log.d("M_MainActivity","onStart Open ${isKeyboardOpen()} ${rootView.height} ${rect.height()}")*/
+        rootView.getWindowVisibleDisplayFrame(rect)
+        Log.d("M_MainActivity","onStart Open ${isKeyboardOpen()}  ${rootView.height} ${rect.bottom-rect.top}")
     }
 
     override fun onPause() {
@@ -92,11 +93,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,  TextView.OnEdit
 
     override fun onClick(v: View?) {
 
-        /*val rect = Rect()
+        val rect = Rect()
         val rootView = findViewById<View>(android.R.id.content)
-        rootView.getWindowVisibleDisplayFrame(rect)    //this.window.decorView.getWindowVisibleDisplayFrame(rect) // this = activity
-
-        Log.d("M_MainActivity","onClick Open ${isKeyboardOpen()} ${rootView.height} ${rect.height()}")*/
+        rootView.getWindowVisibleDisplayFrame(rect)
+        Log.d("M_MainActivity","onClick Open ${isKeyboardOpen()}  ${rootView.height} ${rect.bottom-rect.top}")
 
         if (v?.id == R.id.iv_send){
             val (phrase, color) = benderObj.listenAnswer(messageEd.text.toString())

@@ -2,6 +2,7 @@ package ru.skillbranch.devintensive.extensions
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Rect
 import android.view.inputmethod.InputMethodManager
 import android.view.View
@@ -17,11 +18,15 @@ fun Activity.hideKeyboard(){
 **Activity.isKeyboardOpen Activity.isKeyboardClosed
 Реализуй extension для проверки, открыта или нет Software Keyboard с применением метода rootView.getWindowVisibleDisplayFrame(Rect())
  */
+
 fun Activity.isKeyboardOpen():Boolean{
     val rect = Rect()
     val rootView = findViewById<View>(android.R.id.content)
-    rootView.getWindowVisibleDisplayFrame(rect)    //this.window.decorView.getWindowVisibleDisplayFrame(rect) // this = activity
-    return rootView.height < rect.height()
+    rootView.getWindowVisibleDisplayFrame(rect)
+
+    val heightDiff = abs(rootView.height - (rect.bottom-rect.top))
+
+    return heightDiff < rootView.height/3;
 }
 
 fun Activity.isKeyboardClosed():Boolean{

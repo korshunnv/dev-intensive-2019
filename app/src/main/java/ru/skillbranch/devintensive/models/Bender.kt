@@ -24,28 +24,6 @@ class Bender (var status:Status = Status.NORMAL, var question:Question = Questio
      */
 
     fun listenAnswer(answer: String): Pair<String, Triple<Int, Int, Int>> {
-        /*var validString:String? = ""
-        if (question != Question.IDLE){
-            validString = question.validationAnswer(answer)
-            if (validString == null){
-                if (question.answer.contains(answer.toLowerCase())) {
-                    question = question.nextQUESTION()
-                    validString = "Отлично - ты справился"
-                } else {
-                    counterWrongAnswer++
-                    if (counterWrongAnswer <= 3) {
-                        status = status.nextStatus()
-                        validString = "Это неправильный ответ"
-                    } else {
-                        status = Status.NORMAL
-                        question = Question.NAME
-                        counterWrongAnswer = 0
-                        validString = "Это неправильный ответ. Давай все по новой"
-                    }
-                }
-            }
-        }
-        return  validString + "\n${question.question}" to status.color*/
 
         var validString = question.validationAnswer(answer)
         return if (validString == null){
