@@ -21,7 +21,7 @@ fun Activity.hideKeyboard(){
 Реализуй extension для проверки, открыта или нет Software Keyboard с применением метода rootView.getWindowVisibleDisplayFrame(Rect())
  */
 
-fun Activity.DpToPx(dp: Float): Long {
+fun Activity.dpToPx(dp: Float): Long {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, this.resources.displayMetrics).roundToLong()
 }
 
@@ -30,7 +30,7 @@ fun Activity.isKeyboardOpen(): Boolean {
     val rootView = findViewById<View>(android.R.id.content)
     rootView.getWindowVisibleDisplayFrame(rect)
     val heightDiff = rootView.height - rect.height()
-    val error = this.DpToPx(50F)
+    val error = this.dpToPx(50F)
 
     return heightDiff > error
 }
