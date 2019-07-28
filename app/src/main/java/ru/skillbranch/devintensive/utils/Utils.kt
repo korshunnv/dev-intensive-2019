@@ -1,12 +1,13 @@
 package ru.skillbranch.devintensive.utils
 
-
+import ru.skillbranch.devintensive.extensions.stripHtml
 
 object Utils{
+
     fun parseFullName(fullName: String?): Pair<String?, String?> {
         var firstName:String? = null
         var lastName:String? = null
-        if (!fullName.isNullOrEmpty()&& !fullName.equals(" ")){
+        if (!fullName.isNullOrEmpty()&& fullName != " "){
             val pats:List<String>? = fullName?.split(" ")
             firstName = pats?.getOrNull(0)
             lastName = pats?.getOrNull(1)
@@ -23,13 +24,13 @@ object Utils{
 
         var result: String = ""
             for (item in payload){
-                if (item.toString().equals(" "))
+                if (item.toString() == " ")
                     result += divider
                 else
                     if  (!numbersMap.containsKey(item.toLowerCase().toString())) {
                         result += item.toString()
                     } else {
-                        if (item.toLowerCase().toString().equals(item.toString()))
+                        if (item.toLowerCase().toString() == item.toString())
                             result += numbersMap[item.toString()]
                         else {
                             var temp = (numbersMap[item.toLowerCase().toString()])!!
@@ -45,15 +46,14 @@ object Utils{
 
     fun toInitials(firstName: String?, lastName: String?): String? {
         var result: String? = null
-        if (!firstName.isNullOrEmpty() && !firstName.equals(" ")){
+        if (!firstName.isNullOrEmpty() && firstName != " "){
             result = (firstName[0].toUpperCase()).toString()
         }
-        if (!lastName.isNullOrEmpty() && !lastName.equals(" ")){
+        if (!lastName.isNullOrEmpty() && lastName != " "){
             if (result==null) result = (lastName[0].toUpperCase()).toString()
             else result += (lastName[0].toUpperCase()).toString()
         }
         return result
     }
-
 
 }

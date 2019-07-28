@@ -1,26 +1,25 @@
 package ru.skillbranch.devintensive.ui.profile
 
-import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.activity_profile.*
 import ru.skillbranch.devintensive.R
-import ru.skillbranch.devintensive.extensions.hideKeyboard
-import ru.skillbranch.devintensive.models.Bender
 import ru.skillbranch.devintensive.models.Profile
 import ru.skillbranch.devintensive.viewmodels.ProfileViewModel
+import android.content.Intent
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
+import ru.skillbranch.devintensive.extensions.validGithub
+
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -33,14 +32,13 @@ class ProfileActivity : AppCompatActivity() {
     lateinit var viewFields: Map<String, TextView>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //TODO set custom theme befor super  and setContentView
-        //setTheme()
-
+        //set custom theme before super  and setContentView
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         initViews(savedInstanceState)
         initViewModel()
-        Log.d("M_ProfileActivity","onCreate")
+        Log.d("M_ProfileActivity", "onCreate")
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -55,7 +53,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun updadaTheme(mode: Int) {
-        Log.d("M_ProfileActivity","updateTheme")
+        Log.d("M_ProfileActivity", "updateTheme")
         delegate.setLocalNightMode(mode)
     }
 
@@ -83,14 +81,33 @@ class ProfileActivity : AppCompatActivity() {
         showCurrentMode(isEditMode)
 
         btn_edit.setOnClickListener {
-            if(isEditMode) saveProfileInfo()
+            if (isEditMode) saveProfileInfo()
             isEditMode = !isEditMode
             showCurrentMode(isEditMode)
         }
-        btn_switch_theme.setOnClickListener{
+        btn_switch_theme.setOnClickListener {
             viewModel.swichTheme()
         }
+        et_repository.setOnEditorActionListener { textView, i, keyEvent ->
+            if (i == EditorInfo.IME_ACTION_DONE) { //if (keyEvent != null && (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+                if (!et_repository.text.toString().validGithub()) {
+                    wr_repository.error = "Невалидный адрес репозитория"
+                } else {
+                    wr_repository.error = ""
+                }
+                true
+            } else {
+                false
+            }
+        }
     }
+
+
+    /*
+    Реализуй валидацию вводимых пользователем данных в поле @id/et_repository на соответствие url валидному github аккаунту.
+    Если URL невалиден, выводить сообщение "Невалидный адрес репозитория" в TextInputLayout (wr_repository.error(message)) и
+    запрещать сохранение невалидного значения в SharedPreferences (при попытке сохранить невалидное поле очищать et_repository при нажатии @id/btn_edit)
+     */
 
     private fun showCurrentMode(isEdit: Boolean) {
         val info = viewFields.filter {
@@ -126,12 +143,13 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveProfileInfo(){
+    private fun saveProfileInfo() {
+        et_repository.error = ""
         Profile(
-            firstName =  et_first_name.text.toString(),
+            firstName = et_first_name.text.toString(),
             lastName = et_last_name.text.toString(),
             about = et_about.text.toString(),
-            repository = et_repository.text.toString()
+            repository = if (et_repository.text.toString().validGithub()) et_repository.text.toString() else ""
         ).apply {
             viewModel.saveProfileData(this)
         }

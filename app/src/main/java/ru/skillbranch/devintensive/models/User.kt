@@ -80,9 +80,4 @@ User.Builder().id(s)
 
         fun build() = User(id, firstName, lastName, avatar, rating, respect, lastVisit, isOnline)
     }
-
-
-
-
-
 }
