@@ -16,11 +16,6 @@ fun Activity.hideKeyboard(){
         inputManager.hideSoftInputFromWindow(currentFocus!!.windowToken, InputMethodManager.SHOW_FORCED)
 }
 
-/*
-**Activity.isKeyboardOpen Activity.isKeyboardClosed
-Реализуй extension для проверки, открыта или нет Software Keyboard с применением метода rootView.getWindowVisibleDisplayFrame(Rect())
- */
-
 fun Activity.dpToPx(dp: Float): Long {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, this.resources.displayMetrics).roundToLong()
 }

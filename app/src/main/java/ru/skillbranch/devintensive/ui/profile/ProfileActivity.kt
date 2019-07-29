@@ -18,6 +18,7 @@ import ru.skillbranch.devintensive.viewmodels.ProfileViewModel
 import android.content.Intent
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
+import ru.skillbranch.devintensive.extensions.hideKeyboard
 import ru.skillbranch.devintensive.extensions.validGithub
 
 
@@ -88,15 +89,22 @@ class ProfileActivity : AppCompatActivity() {
         btn_switch_theme.setOnClickListener {
             viewModel.swichTheme()
         }
+        et_repository.setOnClickListener{
+            et_repository.error = null
+            et_repository.isEnabled=false
+
+        }
         et_repository.setOnEditorActionListener { textView, i, keyEvent ->
-            if (i == EditorInfo.IME_ACTION_DONE) { //if (keyEvent != null && (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+            if (i == EditorInfo.IME_ACTION_DONE) {
                 if (!et_repository.text.toString().validGithub()) {
                     wr_repository.error = "Невалидный адрес репозитория"
                 } else {
-                    wr_repository.error = ""
+                    wr_repository.error = null
                 }
+                hideKeyboard()
                 true
             } else {
+                wr_repository.error = null
                 false
             }
         }
@@ -137,14 +145,12 @@ class ProfileActivity : AppCompatActivity() {
             } else {
                 resources.getDrawable(R.drawable.ic_edit_black_24dp, theme)
             }
-
             background.colorFilter = filter
             setImageDrawable(icon)
         }
     }
 
     private fun saveProfileInfo() {
-        et_repository.error = ""
         Profile(
             firstName = et_first_name.text.toString(),
             lastName = et_last_name.text.toString(),
@@ -153,6 +159,6 @@ class ProfileActivity : AppCompatActivity() {
         ).apply {
             viewModel.saveProfileData(this)
         }
+        et_repository.error = null
     }
 }
-
