@@ -82,6 +82,7 @@ class ProfileActivity : AppCompatActivity() {
         showCurrentMode(isEditMode)
 
         btn_edit.setOnClickListener {
+            et_repository.error = null
             if (isEditMode) saveProfileInfo()
             isEditMode = !isEditMode
             showCurrentMode(isEditMode)
@@ -159,6 +160,15 @@ class ProfileActivity : AppCompatActivity() {
         ).apply {
             viewModel.saveProfileData(this)
         }
-        et_repository.error = null
     }
 }
+
+/*
+Необходимо реализовать программное преобразование инициалов пользователя в Drawable с цветным фоном и буквами
++3
+Реализуй программное преобразование инициалов пользователя (если доступны - заполнено хотя бы одно поле) в Drawable
+с фоном colorAccent (c учетом темы) и буквами инициалов (colorWhite) и установи полученное изображение
+как изображение по умолчанию для профиля пользователя
+ */
+
+//https://github.com/korshunnv/dev-intensive-2019
