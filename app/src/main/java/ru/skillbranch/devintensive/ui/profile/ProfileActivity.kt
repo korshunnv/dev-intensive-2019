@@ -90,11 +90,6 @@ class ProfileActivity : AppCompatActivity() {
         btn_switch_theme.setOnClickListener {
             viewModel.swichTheme()
         }
-        et_repository.setOnClickListener{
-            et_repository.error = null
-            et_repository.isEnabled=false
-
-        }
         et_repository.setOnEditorActionListener { textView, i, keyEvent ->
             if (i == EditorInfo.IME_ACTION_DONE) {
                 if (!et_repository.text.toString().validGithub()) {
@@ -160,6 +155,7 @@ class ProfileActivity : AppCompatActivity() {
         ).apply {
             viewModel.saveProfileData(this)
         }
+        //et_repository.error = null
     }
 }
 
