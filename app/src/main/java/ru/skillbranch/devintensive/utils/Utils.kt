@@ -1,6 +1,10 @@
 package ru.skillbranch.devintensive.utils
 
+import android.app.Activity
+import android.content.Context
+import android.util.TypedValue
 import ru.skillbranch.devintensive.extensions.stripHtml
+import kotlin.math.roundToLong
 
 object Utils{
 
@@ -54,6 +58,15 @@ object Utils{
             else result += (lastName[0].toUpperCase()).toString()
         }
         return result
+    }
+
+    fun convertDpToPx(context: Context, px: Int): Int {
+        val scale = context.resources.displayMetrics.density
+        return (px / scale + 0.5f).toInt()
+    }
+
+    fun dpToPx(context: Context, dp: Float): Long {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics).roundToLong()
     }
 
 }

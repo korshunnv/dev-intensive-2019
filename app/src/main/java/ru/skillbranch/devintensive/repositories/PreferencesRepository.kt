@@ -15,6 +15,7 @@ object PreferencesRepository {
     private const val RATING = "RATING"
     private const val RESPECT = "RESPECT"
     private const val APP_THEME = "APP_THEME"
+    private const val NICK_NAME = "NICK_NAME"
 
     private val prefs: SharedPreferences by lazy {
         val ctx = App.applicationContext()
@@ -36,6 +37,7 @@ object PreferencesRepository {
             putValue(REPOSITORY to repository)
             putValue(RATING to rating)
             putValue(RESPECT to respect)
+            putValue(NICK_NAME to nickName)
         }
     }
 
@@ -45,7 +47,8 @@ object PreferencesRepository {
         prefs.getString(ABOUT, "")!!,
         prefs.getString(REPOSITORY, "")!!,
         prefs.getInt(RATING, 0),
-        prefs.getInt(RESPECT, 0)
+        prefs.getInt(RESPECT, 0),
+        prefs.getString(NICK_NAME, "John Doe")!!
     )
 
     private fun putValue(pair: Pair<String, Any>) = with(prefs.edit()) {

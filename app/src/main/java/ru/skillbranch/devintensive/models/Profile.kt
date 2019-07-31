@@ -8,9 +8,10 @@ data class Profile(
     val about: String,
     val repository: String,
     val rating: Int = 0,
-    val respect: Int = 0
+    val respect: Int = 0,
+    val nickName:String = "John Doe"//implement me
 ) {
-    val nickName:String = "Dohn Doe"//implement me
+    //val nickName:String = "Dohn Doe"//implement me
     val rank: String = "Junior Android Developer"
 
 

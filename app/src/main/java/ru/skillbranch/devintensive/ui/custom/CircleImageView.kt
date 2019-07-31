@@ -4,13 +4,14 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.util.AttributeSet
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType.CENTER_CROP
 import android.widget.ImageView.ScaleType.CENTER_INSIDE
-import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import ru.skillbranch.devintensive.App
 import ru.skillbranch.devintensive.R
+import ru.skillbranch.devintensive.utils.Utils
 import androidx.annotation.ColorRes as ColorRes
 
 /*
@@ -29,12 +30,15 @@ setCv_borderColor(@ColorRes colorId: Int).
 Используй CircleImageView как ImageView для аватара пользователя (@id/iv_avatar)
  */
 
-class CircleImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+class CircleImageView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0)
     : ImageView(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val DEFAULT_CV_BORDER_WIDTH = 2f
-        private const val DEFAULT_CV_BORDER_COLOR = Color.BLACK
+        private const val DEFAULT_CV_BORDER_WIDTH = 2
+        private const val DEFAULT_CV_BORDER_COLOR:Int = Color.WHITE
     }
 
     // Properties
@@ -44,23 +48,25 @@ class CircleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
     private var circleCenter = 0
     private var heightCircle: Int = 0
 
-    private var cv_borderColor = DEFAULT_CV_BORDER_COLOR
-    private var cv_borderWidth = DEFAULT_CV_BORDER_WIDTH
+    private var borderColor = DEFAULT_CV_BORDER_COLOR
+    private var borderWidth = DEFAULT_CV_BORDER_WIDTH
 
-    fun getBorderWidth():Int = cv_borderWidth.toInt()
+    fun getBorderWidth():Int = borderWidth
     fun setBorderWidth(dp:Int){
-        cv_borderWidth = dp.toFloat()
+        borderWidth = dp
+        this.invalidate()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun getBorderColor(): Color = Color.valueOf(cv_borderColor)
+    fun getBorderColor(): Int = borderColor
 
     fun setBorderColor(hex:String){
-        cv_borderColor = Color.parseColor(hex) //cv_borderColor = hex.toInt(16)
+        borderColor = Color.parseColor(hex)
+        this.invalidate()
     }
 
     fun setBorderColor(@ColorRes colorId: Int){
-        cv_borderColor = colorId
+        borderColor = colorId//ContextCompat.getColor(App.applicationContext(), colorId)
+        this.invalidate()
     }
 
     // Color Filter
@@ -89,8 +95,8 @@ class CircleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         // Init Border
         val defaultBorderSize = DEFAULT_CV_BORDER_WIDTH * getContext().resources.displayMetrics.density
-        cv_borderWidth = attributes.getDimension(R.styleable.CircleImageView_cv_borderWidth, defaultBorderSize)
-        cv_borderColor = attributes.getColor(R.styleable.CircleImageView_cv_borderColor, Color.WHITE)
+        borderWidth = attributes.getDimension(R.styleable.CircleImageView_cv_borderWidth, defaultBorderSize).toInt()
+        borderColor = attributes.getColor(R.styleable.CircleImageView_cv_borderColor, DEFAULT_CV_BORDER_COLOR)
 
         attributes.recycle()
     }
@@ -121,8 +127,10 @@ class CircleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
         // Check if civImage isn't null
         if (civImage == null) return
 
-        val circleCenterWithBorder = circleCenter + cv_borderWidth
-
+        val circleCenterWithBorder = circleCenter + borderWidth.toFloat()
+        paintBorder.color = borderColor
+        paint.color = borderColor
+        paintBackground.color = context.getColor(R.color.color_accent)
         // Draw Border
         canvas.drawCircle(circleCenterWithBorder, circleCenterWithBorder, circleCenterWithBorder, paintBorder)
         // Draw Circle background
@@ -140,7 +148,7 @@ class CircleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         heightCircle = Math.min(usableWidth, usableHeight)
 
-        circleCenter = (heightCircle - cv_borderWidth * 2).toInt() / 2
+        circleCenter = (heightCircle - borderWidth * 2).toInt() / 2
 
         invalidate()
     }

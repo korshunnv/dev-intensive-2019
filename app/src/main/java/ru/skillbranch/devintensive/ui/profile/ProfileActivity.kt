@@ -15,11 +15,11 @@ import kotlinx.android.synthetic.main.activity_profile.*
 import ru.skillbranch.devintensive.R
 import ru.skillbranch.devintensive.models.Profile
 import ru.skillbranch.devintensive.viewmodels.ProfileViewModel
-import android.content.Intent
-import android.view.KeyEvent
-import android.view.inputmethod.EditorInfo
-import ru.skillbranch.devintensive.extensions.hideKeyboard
 import ru.skillbranch.devintensive.extensions.validGithub
+import android.text.Editable
+import android.text.TextWatcher
+
+
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -86,11 +86,39 @@ class ProfileActivity : AppCompatActivity() {
             if (isEditMode) saveProfileInfo()
             isEditMode = !isEditMode
             showCurrentMode(isEditMode)
+            tv_nick_name.text = "${et_first_name.text} ${et_last_name.text}"
         }
         btn_switch_theme.setOnClickListener {
             viewModel.swichTheme()
         }
-        et_repository.setOnEditorActionListener { textView, i, keyEvent ->
+        //et_repository
+
+        et_repository.addTextChangedListener(object : TextWatcher {
+
+            override fun onTextChanged(
+                s: CharSequence, start: Int, before: Int,
+                count: Int
+            ) {
+                if (!et_repository.text.toString().validGithub()) {
+                        wr_repository.error = "Невалидный адрес репозитория"
+                    } else {
+                        wr_repository.error = null
+                    }
+            }
+
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int, count: Int,
+                after: Int
+            ) {
+
+            }
+
+            override fun afterTextChanged(s: Editable) {
+
+            }
+        })
+        /*et_repository.setOnEditorActionListener { textView, i, keyEvent ->
             if (i == EditorInfo.IME_ACTION_DONE) {
                 if (!et_repository.text.toString().validGithub()) {
                     wr_repository.error = "Невалидный адрес репозитория"
@@ -103,7 +131,7 @@ class ProfileActivity : AppCompatActivity() {
                 wr_repository.error = null
                 false
             }
-        }
+        }*/
     }
 
 
@@ -151,7 +179,8 @@ class ProfileActivity : AppCompatActivity() {
             firstName = et_first_name.text.toString(),
             lastName = et_last_name.text.toString(),
             about = et_about.text.toString(),
-            repository = if (et_repository.text.toString().validGithub()) et_repository.text.toString() else ""
+            repository = if (et_repository.text.toString().validGithub()) et_repository.text.toString() else "",
+            nickName = tv_nick_name.text.toString()
         ).apply {
             viewModel.saveProfileData(this)
         }

@@ -144,6 +144,7 @@
                 android:layout_toRightOf="@id/ic_avatar"
                 android:layout_marginLeft="@dimen/spacing_normal_16">
 
+
             <EditText style="@style/Profile.EditText"
                       android:id="@+id/et_first_name"
                       android:layout_width="match_parent"
