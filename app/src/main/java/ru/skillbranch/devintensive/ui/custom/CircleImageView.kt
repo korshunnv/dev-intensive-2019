@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType.CENTER_CROP
 import android.widget.ImageView.ScaleType.CENTER_INSIDE
+import androidx.annotation.Dimension
 import androidx.core.content.ContextCompat
 import ru.skillbranch.devintensive.App
 import ru.skillbranch.devintensive.R
@@ -18,16 +19,13 @@ import androidx.annotation.ColorRes as ColorRes
 Реализуй CustomView с названием класса CircleImageView и кастомными xml атрибутами
 cv_borderColor (цвет границы (format="color") по умолчанию white) и
 cv_borderWidth (ширина границы (format="dimension") по умолчанию 2dp).
-
 CircleImageView должна превращать установленное изображение в круглое изображение с цветной рамкой,
 у CircleImageView должны быть реализованы методы
-getBorderWidth():Int,
-setBorderWidth(dp:Int),
-getCv_borderColor():Color,
-setCv_borderColor(hex:String),
-setCv_borderColor(@ColorRes colorId: Int).
-
-Используй CircleImageView как ImageView для аватара пользователя (@id/iv_avatar)
+@Dimension getBorderWidth():Int,
+setBorderWidth(@Dimension dp:Int),
+getBorderColor():Int,
+setBorderColor(hex:String),
+setBorderColor(@ColorRes colorId: Int). Используй CircleImageView как ImageView для аватара пользователя (@id/iv_avatar)
  */
 
 class CircleImageView @JvmOverloads constructor(
@@ -42,17 +40,17 @@ class CircleImageView @JvmOverloads constructor(
     }
 
     // Properties
-    private val paint: Paint = Paint().apply { isAntiAlias = true }
-    private val paintBorder: Paint = Paint().apply { isAntiAlias = true }
-    private val paintBackground: Paint = Paint().apply { isAntiAlias = true }
+    private val paint: Paint = Paint()//.apply { isAntiAlias = true }
+    private val paintBorder: Paint = Paint()//.apply { isAntiAlias = true }
+    private val paintBackground: Paint = Paint()//.apply { isAntiAlias = true }
     private var circleCenter = 0
     private var heightCircle: Int = 0
 
     private var borderColor = DEFAULT_CV_BORDER_COLOR
     private var borderWidth = DEFAULT_CV_BORDER_WIDTH
 
-    fun getBorderWidth():Int = borderWidth
-    fun setBorderWidth(dp:Int){
+    @Dimension fun getBorderWidth():Int = borderWidth
+    fun setBorderWidth(@Dimension dp:Int){
         borderWidth = dp
         this.invalidate()
     }
@@ -65,7 +63,7 @@ class CircleImageView @JvmOverloads constructor(
     }
 
     fun setBorderColor(@ColorRes colorId: Int){
-        borderColor = colorId//ContextCompat.getColor(App.applicationContext(), colorId)
+        borderColor = ContextCompat.getColor(App.applicationContext(), colorId)
         this.invalidate()
     }
 
@@ -148,7 +146,7 @@ class CircleImageView @JvmOverloads constructor(
 
         heightCircle = Math.min(usableWidth, usableHeight)
 
-        circleCenter = (heightCircle - borderWidth * 2).toInt() / 2
+        circleCenter = (heightCircle - borderWidth * 2) / 2
 
         invalidate()
     }
