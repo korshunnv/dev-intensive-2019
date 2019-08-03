@@ -18,8 +18,8 @@ import ru.skillbranch.devintensive.viewmodels.ProfileViewModel
 import ru.skillbranch.devintensive.extensions.validGithub
 import android.text.Editable
 import android.text.TextWatcher
-
-
+import android.util.TypedValue
+import ru.skillbranch.devintensive.utils.Utils
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -43,27 +43,28 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
-        super.onSaveInstanceState(outState)
-        outState?.putBoolean(IS_EDIT_MODE, isEditMode)
+        super.onSaveInstanceState(outState!!)
+        outState.putBoolean(IS_EDIT_MODE, isEditMode)
     }
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
-        viewModel.getProfileData().observe(this, Observer { updadaUI(it) })
-        viewModel.getTheme().observe(this, Observer { updadaTheme(it) })
+        viewModel.getProfileData().observe(this, Observer { updateUI(it) })
+        viewModel.getTheme().observe(this, Observer { updateTheme(it) })
     }
 
-    private fun updadaTheme(mode: Int) {
+    private fun updateTheme(mode: Int) {
         Log.d("M_ProfileActivity", "updateTheme")
         delegate.setLocalNightMode(mode)
     }
 
-    private fun updadaUI(profile: Profile) {
+    private fun updateUI(profile: Profile) {
         profile.toMap().also {
             for ((k, v) in viewFields) {
                 v.text = it[k].toString()
             }
         }
+        updateAvatar(profile)
     }
 
     private fun initViews(savedInstanceState: Bundle?) {
@@ -91,7 +92,6 @@ class ProfileActivity : AppCompatActivity() {
         btn_switch_theme.setOnClickListener {
             viewModel.swichTheme()
         }
-        //et_repository
 
         et_repository.addTextChangedListener(object : TextWatcher {
 
@@ -111,35 +111,12 @@ class ProfileActivity : AppCompatActivity() {
                 s: CharSequence, start: Int, count: Int,
                 after: Int
             ) {
-
             }
 
             override fun afterTextChanged(s: Editable) {
-
             }
         })
-        /*et_repository.setOnEditorActionListener { textView, i, keyEvent ->
-            if (i == EditorInfo.IME_ACTION_DONE) {
-                if (!et_repository.text.toString().validGithub()) {
-                    wr_repository.error = "Невалидный адрес репозитория"
-                } else {
-                    wr_repository.error = null
-                }
-                hideKeyboard()
-                true
-            } else {
-                wr_repository.error = null
-                false
-            }
-        }*/
     }
-
-
-    /*
-    Реализуй валидацию вводимых пользователем данных в поле @id/et_repository на соответствие url валидному github аккаунту.
-    Если URL невалиден, выводить сообщение "Невалидный адрес репозитория" в TextInputLayout (wr_repository.error(message)) и
-    запрещать сохранение невалидного значения в SharedPreferences (при попытке сохранить невалидное поле очищать et_repository при нажатии @id/btn_edit)
-     */
 
     private fun showCurrentMode(isEdit: Boolean) {
         val info = viewFields.filter {
@@ -158,7 +135,7 @@ class ProfileActivity : AppCompatActivity() {
         with(btn_edit) {
             val filter: ColorFilter? = if (isEdit) {
                 PorterDuffColorFilter(
-                    resources.getColor(R.color.color_accent, theme),
+                    getThemeAccentColor(),
                     PorterDuff.Mode.SRC_IN
                 )
             } else {
@@ -174,6 +151,12 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+
+    private fun getThemeAccentColor(): Int {
+        val value = TypedValue()
+        theme.resolveAttribute(R.attr.colorAccent, value, true)
+        return value.data
+    }
     private fun saveProfileInfo() {
         Profile(
             firstName = et_first_name.text.toString(),
@@ -184,16 +167,13 @@ class ProfileActivity : AppCompatActivity() {
         ).apply {
             viewModel.saveProfileData(this)
         }
-        //et_repository.error = null
+    }
+
+    private fun updateAvatar(profile: Profile) {
+        val initials = Utils.toInitials(profile.firstName, profile.lastName)
+        iv_avatar.generateAvatar(initials, Utils.convertSpToPx(this, 48), theme)
+
     }
 }
-
-/*
-Необходимо реализовать программное преобразование инициалов пользователя в Drawable с цветным фоном и буквами
-+3
-Реализуй программное преобразование инициалов пользователя (если доступны - заполнено хотя бы одно поле) в Drawable
-с фоном colorAccent (c учетом темы) и буквами инициалов (colorWhite) и установи полученное изображение
-как изображение по умолчанию для профиля пользователя
- */
 
 //https://github.com/korshunnv/dev-intensive-2019

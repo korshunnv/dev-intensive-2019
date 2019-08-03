@@ -5,6 +5,8 @@ import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatDelegate
 import ru.skillbranch.devintensive.App
 import ru.skillbranch.devintensive.models.Profile
+import java.util.prefs.Preferences
+import java.util.prefs.PreferencesFactory
 
 object PreferencesRepository {
 

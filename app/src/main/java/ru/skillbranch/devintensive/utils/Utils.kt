@@ -12,7 +12,7 @@ object Utils{
         var firstName:String? = null
         var lastName:String? = null
         if (!fullName.isNullOrEmpty()&& fullName != " "){
-            val pats:List<String>? = fullName?.split(" ")
+            val pats:List<String>? = fullName.split(" ")
             firstName = pats?.getOrNull(0)
             lastName = pats?.getOrNull(1)
         }
@@ -65,8 +65,22 @@ object Utils{
         return (px / scale + 0.5f).toInt()
     }
 
-    fun dpToPx(context: Context, dp: Float): Long {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics).roundToLong()
+    fun dpToPx(context: Context, dp: Int): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics).toInt()
+    }
+
+    fun pxToDp(context: Context, px: Int): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, px.toFloat(), context.resources.displayMetrics).toInt()
+    }
+
+    fun convertPxToDp(context: Context, px: Int): Int {
+        val scale = context.resources.displayMetrics.density
+        return (px / scale + 0.5f).toInt()
+    }
+
+
+    fun convertSpToPx(context: Context, sp: Int): Int {
+        return sp * context.resources.displayMetrics.density.toInt()//.scaledDensity.toInt()
     }
 
 }

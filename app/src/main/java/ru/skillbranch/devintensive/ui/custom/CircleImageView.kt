@@ -1,10 +1,12 @@
 package ru.skillbranch.devintensive.ui.custom
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType.CENTER_CROP
 import android.widget.ImageView.ScaleType.CENTER_INSIDE
@@ -31,12 +33,12 @@ setBorderColor(@ColorRes colorId: Int). Используй CircleImageView ка�
 class CircleImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0)
-    : ImageView(context, attrs, defStyleAttr) {
+    defStyleAttr: Int = 0
+) : ImageView(context, attrs, defStyleAttr) {
 
     companion object {
         private const val DEFAULT_CV_BORDER_WIDTH = 2
-        private const val DEFAULT_CV_BORDER_COLOR:Int = Color.WHITE
+        private const val DEFAULT_CV_BORDER_COLOR: Int = Color.WHITE
     }
 
     // Properties
@@ -45,24 +47,27 @@ class CircleImageView @JvmOverloads constructor(
     private val paintBackground: Paint = Paint()//.apply { isAntiAlias = true }
     private var circleCenter = 0
     private var heightCircle: Int = 0
+    private var text: String? = ""
 
     private var borderColor = DEFAULT_CV_BORDER_COLOR
     private var borderWidth = DEFAULT_CV_BORDER_WIDTH
 
-    @Dimension fun getBorderWidth():Int = borderWidth
-    fun setBorderWidth(@Dimension dp:Int){
+    @Dimension
+    fun getBorderWidth(): Int = borderWidth
+
+    fun setBorderWidth(@Dimension dp: Int) {
         borderWidth = dp
         this.invalidate()
     }
 
     fun getBorderColor(): Int = borderColor
 
-    fun setBorderColor(hex:String){
+    fun setBorderColor(hex: String) {
         borderColor = Color.parseColor(hex)
         this.invalidate()
     }
 
-    fun setBorderColor(@ColorRes colorId: Int){
+    fun setBorderColor(@ColorRes colorId: Int) {
         borderColor = ContextCompat.getColor(App.applicationContext(), colorId)
         this.invalidate()
     }
@@ -110,7 +115,12 @@ class CircleImageView @JvmOverloads constructor(
 
     override fun setScaleType(scaleType: ScaleType) {
         if (scaleType != CENTER_CROP && scaleType != CENTER_INSIDE) {
-            throw IllegalArgumentException(String.format("ScaleType %s not supported. " + "Just ScaleType.CENTER_CROP & ScaleType.CENTER_INSIDE are available for this library.", scaleType))
+            throw IllegalArgumentException(
+                String.format(
+                    "ScaleType %s not supported. " + "Just ScaleType.CENTER_CROP & ScaleType.CENTER_INSIDE are available for this library.",
+                    scaleType
+                )
+            )
         } else {
             super.setScaleType(scaleType)
         }
@@ -219,7 +229,8 @@ class CircleImageView @JvmOverloads constructor(
             is BitmapDrawable -> drawable.bitmap
             else -> try {
                 // Create Bitmap object out of the drawable
-                val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                val bitmap =
+                    Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
                 val canvas = Canvas(bitmap)
                 drawable.setBounds(0, 0, canvas.width, canvas.height)
                 drawable.draw(canvas)
@@ -232,7 +243,7 @@ class CircleImageView @JvmOverloads constructor(
     //endregion
 
     //region Measure Method
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+    /*override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val width = measure(widthMeasureSpec)
         val height = measure(heightMeasureSpec)
         setMeasuredDimension(width, height)
@@ -246,6 +257,55 @@ class CircleImageView @JvmOverloads constructor(
             MeasureSpec.AT_MOST -> specSize // The child can be as large as it wants up to the specified size.
             else -> heightCircle // The parent has not imposed any constraint on the child.
         }
+    }*/
+    //endregion
+
+    //region initials
+    fun generateAvatar(text: String?, sizeSp: Int, theme: Resources.Theme) {
+        /* don't render if initials haven't changed */
+        if (civImage == null || text != this.text) {
+            val image =
+                if (text == null) {
+                    getDefaultAvatar(theme)
+                } else getInitials(text, sizeSp, theme)
+
+            this.text = text
+            civImage = image
+            setImageBitmap(civImage)
+            invalidate()
+        }
+    }
+
+    private fun getInitials(text: String, sizeSp: Int, theme: Resources.Theme): Bitmap {
+        val image = getDefaultAvatar(theme)
+
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+        paint.textSize = sizeSp.toFloat()
+        paint.color = Color.WHITE
+        paint.textAlign = Paint.Align.CENTER
+
+        val textBounds = Rect()
+        paint.getTextBounds(text, 0, text.length, textBounds)
+
+        val backgroundBounds = RectF()
+        backgroundBounds.set(0f, 0f, layoutParams.height.toFloat(), layoutParams.height.toFloat())
+
+        val textBottom = backgroundBounds.centerY() - textBounds.exactCenterY()
+        val canvas = Canvas(image)
+        canvas.drawText(text, backgroundBounds.centerX(), textBottom, paint)
+
+        return image
+    }
+
+    private fun getDefaultAvatar(theme: Resources.Theme): Bitmap {
+        val image = Bitmap.createBitmap(layoutParams.height, layoutParams.height, Bitmap.Config.ARGB_8888)
+        val color = TypedValue()
+        theme.resolveAttribute(R.attr.colorAccent, color, true)
+
+        val canvas = Canvas(image)
+        canvas.drawColor(color.data)
+
+        return image
     }
     //endregion
 }
