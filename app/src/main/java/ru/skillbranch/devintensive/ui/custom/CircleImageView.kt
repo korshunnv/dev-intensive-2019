@@ -50,26 +50,26 @@ class CircleImageView @JvmOverloads constructor(
     private var text: String? = ""
 
     private var borderColor = DEFAULT_CV_BORDER_COLOR
-    private var borderWidth = DEFAULT_CV_BORDER_WIDTH
+    private var borderWidth:Int = Utils.dpToPx(context, 2)
 
     @Dimension
-    fun getBorderWidth(): Int = borderWidth
+    fun getBorderWidth(): Int = Utils.pxToDp(context, borderWidth)
 
     fun setBorderWidth(@Dimension dp: Int) {
-        borderWidth = dp
-        this.invalidate()
+        borderWidth = Utils.dpToPx(context,dp)
+        invalidate()
     }
 
     fun getBorderColor(): Int = borderColor
 
     fun setBorderColor(hex: String) {
         borderColor = Color.parseColor(hex)
-        this.invalidate()
+        invalidate()
     }
 
     fun setBorderColor(@ColorRes colorId: Int) {
         borderColor = ContextCompat.getColor(App.applicationContext(), colorId)
-        this.invalidate()
+        invalidate()
     }
 
     // Color Filter
@@ -97,8 +97,8 @@ class CircleImageView @JvmOverloads constructor(
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.CircleImageView, defStyleAttr, 0)
 
         // Init Border
-        val defaultBorderSize = DEFAULT_CV_BORDER_WIDTH * getContext().resources.displayMetrics.density
-        borderWidth = attributes.getDimension(R.styleable.CircleImageView_cv_borderWidth, defaultBorderSize).toInt()
+        //val defaultBorderSize = DEFAULT_CV_BORDER_WIDTH * getContext().resources.displayMetrics.density
+        borderWidth = attributes.getDimension(R.styleable.CircleImageView_cv_borderWidth, borderWidth.toFloat()).toInt()
         borderColor = attributes.getColor(R.styleable.CircleImageView_cv_borderColor, DEFAULT_CV_BORDER_COLOR)
 
         attributes.recycle()

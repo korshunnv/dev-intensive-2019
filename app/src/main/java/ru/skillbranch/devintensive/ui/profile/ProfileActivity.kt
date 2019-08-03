@@ -33,7 +33,6 @@ class ProfileActivity : AppCompatActivity() {
     lateinit var viewFields: Map<String, TextView>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //set custom theme before super  and setContentView
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
@@ -84,11 +83,14 @@ class ProfileActivity : AppCompatActivity() {
 
         btn_edit.setOnClickListener {
             et_repository.error = null
-            if (isEditMode) saveProfileInfo()
+            if (isEditMode) {
+                saveProfileInfo()
+                updateUI(viewModel.getProfileData().value!!)
+            }
             isEditMode = !isEditMode
             showCurrentMode(isEditMode)
-            tv_nick_name.text = "${et_first_name.text} ${et_last_name.text}"
         }
+
         btn_switch_theme.setOnClickListener {
             viewModel.swichTheme()
         }
@@ -151,19 +153,18 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-
     private fun getThemeAccentColor(): Int {
         val value = TypedValue()
         theme.resolveAttribute(R.attr.colorAccent, value, true)
         return value.data
     }
+
     private fun saveProfileInfo() {
         Profile(
             firstName = et_first_name.text.toString(),
             lastName = et_last_name.text.toString(),
             about = et_about.text.toString(),
-            repository = if (et_repository.text.toString().validGithub()) et_repository.text.toString() else "",
-            nickName = tv_nick_name.text.toString()
+            repository = if (et_repository.text.toString().validGithub()) et_repository.text.toString() else ""
         ).apply {
             viewModel.saveProfileData(this)
         }
@@ -172,7 +173,7 @@ class ProfileActivity : AppCompatActivity() {
     private fun updateAvatar(profile: Profile) {
         val initials = Utils.toInitials(profile.firstName, profile.lastName)
         iv_avatar.generateAvatar(initials, Utils.convertSpToPx(this, 48), theme)
-
+        tv_nick_name.text = profile.nickName
     }
 }
 

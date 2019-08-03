@@ -8,14 +8,13 @@ data class Profile(
     val about: String,
     val repository: String,
     val rating: Int = 0,
-    val respect: Int = 0,
-    val nickName:String = "John Doe"//implement me
+    val respect: Int = 0
 ) {
-    //val nickName:String = "Dohn Doe"//implement me
+    val nickName: String = Utils.transliteration("${Utils.getFullName(firstName,lastName)}","_")//implement me
     val rank: String = "Junior Android Developer"
 
 
-    fun toMap():Map<String, Any> = mapOf(
+    fun toMap(): Map<String, Any> = mapOf(
         "nickName" to nickName,
         "rank" to rank,
         "firstName" to firstName,
@@ -23,10 +22,6 @@ data class Profile(
         "about" to about,
         "repository" to repository,
         "rating" to rating,
-        "respec" to respect
+        "respect" to respect
     )
-
-    fun nickName():String{
-        return Utils.transliteration(firstName, lastName)
-    }
 }

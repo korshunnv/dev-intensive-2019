@@ -8,9 +8,6 @@ import android.util.TypedValue
 import android.view.inputmethod.InputMethodManager
 import android.view.View
 import ru.skillbranch.devintensive.utils.Utils
-import ru.skillbranch.devintensive.utils.Utils.convertDpToPx
-import java.lang.Math.abs
-import kotlin.math.roundToLong
 
 
 fun Activity.hideKeyboard(){
@@ -23,20 +20,10 @@ fun Activity.isKeyboardOpen(): Boolean {
     val rootView = findViewById<View>(android.R.id.content)
     rootView.getWindowVisibleDisplayFrame(rect)
     val heightDiff = rootView.height - rect.height()
-    val error = convertDpToPx(this,50)//this.dpToPx(50F)
+    val error = Utils.dpToPx(this,50)//this.dpToPx(50F)
 
     return heightDiff > error
 }
-
-/*fun Activity.isKeyboardOpen():Boolean{
-    val rect = Rect()
-    val rootView = findViewById<View>(android.R.id.content)
-    rootView.getWindowVisibleDisplayFrame(rect)
-
-    val heightDiff = abs(rootView.height - (rect.bottom-rect.top))
-
-    return heightDiff < rootView.height/3;
-}*/
 
 fun Activity.isKeyboardClosed():Boolean{
     return this.isKeyboardOpen().not()
