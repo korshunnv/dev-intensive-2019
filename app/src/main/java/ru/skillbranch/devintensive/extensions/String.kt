@@ -15,7 +15,7 @@ fun String.validGithub(): Boolean {
     if (this.isNullOrEmpty()) {
         return true
     }   else {
-        var pattern = """^(?:https://github.com|https://www.github.com|www.github.com|github.com)/(\w+)"""
+        var pattern = """^(?:https://github.com|https://www.github.com|www.github.com|github.com)/([\w-]+)"""
         val matcherResult = Regex(pattern).find(this)
         if (matcherResult == null) {
             return false
