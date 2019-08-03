@@ -50,13 +50,13 @@ class CircleImageView @JvmOverloads constructor(
     private var text: String? = ""
 
     private var borderColor = DEFAULT_CV_BORDER_COLOR
-    private var borderWidth:Int = Utils.dpToPx(context, 2)
+    private var borderWidth:Int = 2//Utils.dpToPx(context, 2)
 
     @Dimension
-    fun getBorderWidth(): Int = Utils.pxToDp(context, borderWidth)
+    fun getBorderWidth(): Int = borderWidth//Utils.pxToDp(context, borderWidth)
 
     fun setBorderWidth(@Dimension dp: Int) {
-        borderWidth = Utils.dpToPx(context,dp)
+        borderWidth = dp//Utils.dpToPx(context,dp)
         invalidate()
     }
 
