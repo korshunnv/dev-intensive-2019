@@ -94,25 +94,25 @@ object Utils {
         return result
     }
 
-    /*fun convertDpToPx(context: Context, px: Int): Int {
+    fun dpToPx(context: Context, px: Int): Int {
         val scale = context.resources.displayMetrics.density
         return (px / scale + 0.5f).toInt()
-    }*/
+    }
 
-    fun dpToPx(context: Context, dp: Int): Int {
+    /*fun convertDpToPx(context: Context, dp: Int): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics)
             .toInt()
-    }
-
-    fun pxToDp(context: Context, px: Int): Int {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, px.toFloat(), context.resources.displayMetrics)
-            .toInt()
-    }
+    }*/
 
     /*fun convertPxToDp(context: Context, px: Int): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, px.toFloat(), context.resources.displayMetrics)
+            .toInt()
+    }*/
+
+    fun pxToDp(context: Context, px: Int): Int {
         val scale = context.resources.displayMetrics.density
         return (px / scale + 0.5f).toInt()
-    }*/
+    }
 
 
     fun convertSpToPx(context: Context, sp: Int): Int {
